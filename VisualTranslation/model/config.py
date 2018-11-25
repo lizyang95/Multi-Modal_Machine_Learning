@@ -65,4 +65,4 @@ __C.VTR = edict()
 #the dimension of embedding space in vtranse
 __C.VTR.VG_R = 500
 
-__C.GPU = 0,1
+__C.GPU = "0,1"

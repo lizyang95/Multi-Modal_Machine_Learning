@@ -34,6 +34,12 @@ import tensorflow as tf
 
 from tensorflow.contrib.tensorboard.plugins import projector
 
+from model.config import cfg
+gpu = cfg.GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+
 # Give a folder path as an argument with '--log_dir' to save
 # TensorBoard summaries. Default is a log folder in current directory.
 current_path = os.path.dirname(os.path.realpath(sys.argv[0]))

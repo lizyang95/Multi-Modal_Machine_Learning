@@ -1,0 +1,4 @@
+embeddings {
+  tensor_name: "embeddings/Variable:0"
+  metadata_path: "/home/liz/Multi-Modal_Machine_Learning/VisualTranslation/language/log/metadata.tsv"
+}

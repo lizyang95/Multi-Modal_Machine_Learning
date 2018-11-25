@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/liz/Multi-Modal_Machine_Learning/VisualTranslation/language/log/model.ckpt"
+all_model_checkpoint_paths: "/home/liz/Multi-Modal_Machine_Learning/VisualTranslation/language/log/model.ckpt"

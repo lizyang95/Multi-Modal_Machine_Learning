@@ -55,6 +55,8 @@ optimizer = tf.train.AdamOptimizer(learning_rate=lr_init)
 train_loss = vnet.losses['rd_loss']
 RD_train = optimizer.minimize(train_loss, var_list = RD_var)
 
+pdb.set_trace()
+
 with tf.Session() as sess:
 	init = tf.global_variables_initializer()
 	sess.run(init)

@@ -123,7 +123,6 @@ class VTranse(object):
 			pooling = max_pool(crops, 2, 2, 2, 2, name="max_pooling")
 		return pooling
 
-
 	def region_classification(self, fc7, is_training, reuse = False):
 		cls_score = slim.fully_connected(fc7, self.num_classes,
 										 activation_fn=None, scope='cls_score', reuse=reuse)

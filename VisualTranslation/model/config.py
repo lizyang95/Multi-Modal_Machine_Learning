@@ -12,7 +12,7 @@ __C = edict()
 
 cfg = __C
 
-__C.DIR = '/home/yangxu/project/rd/'
+__C.DIR = '~/'
 
 __C.DIR2 = '/home/jhmei/yangxu/'
 

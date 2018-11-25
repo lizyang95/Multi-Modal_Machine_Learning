@@ -15,7 +15,7 @@ file_path = [train_file_path, test_file_path]
 train_image_path = cfg.DIR + 'dataset/VRD/sg_dataset/sg_train_images/'
 test_image_path = cfg.DIR + 'dataset/VRD/sg_dataset/sg_test_images/'
 image_path = [train_image_path, test_image_path]
-save_path =cfg.DIR + 'Multi-Modal_Machine_Learning/VisualTranslation/input/vrd_roidb.npz'
+save_path =cfg.DIR + 'VisualTranslation/input/vrd_roidb.npz'
 
 for r in range(2):
 	file_path_use = file_path[r]

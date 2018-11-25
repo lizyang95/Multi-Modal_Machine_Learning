@@ -7,12 +7,12 @@ import numpy as np
 from model.config import cfg
 from model.ass_fun import *
 from net.vtranse_vgg import VTranse
+import pdb
 
 N_cls = cfg.VRD_NUM_CLASS
 N_rela = cfg.VRD_NUM_RELA
 N_each_batch = cfg.VRD_BATCH_NUM
 lr_init = cfg.VRD_LR_INIT
-
 
 index_sp = False
 index_cls = False
@@ -63,6 +63,7 @@ with tf.Session() as sess:
 			roidb_use = train_roidb[roidb_id]
 			if len(roidb_use['rela_gt']) == 0:
 				continue
+			roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
 			rd_loss_temp, acc_temp = vnet.train_predicate(sess, roidb_use, RD_train)
 			rd_loss = rd_loss + rd_loss_temp
 			acc = acc + acc_temp

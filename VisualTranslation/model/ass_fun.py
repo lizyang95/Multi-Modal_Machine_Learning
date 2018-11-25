@@ -1,16 +1,17 @@
-import numpy as np 
-import cv2 
+import numpy as np
+import cv2
 import os
-from model.config import cfg 
+from model.config import cfg
+import pdb
 
 def generate_batch(N_total, N_each):
 	"""
 	This file is used to generate index of the training batch.
-	
+
 	Arg:
-		N_total: 
-		N_each: 
-	out_put: 
+		N_total:
+		N_each:
+	out_put:
 		index_box: the corresponding index
 	"""
 	num_batch = np.int32(N_total/N_each)
@@ -113,7 +114,7 @@ def im_preprocess(image_path):
 
 	if np.round(im_scale * im_size_max) > max_size:
 		im_scale = float(max_size) / float(im_size_max)
-	im = cv2.resize(im_orig, None, None, fx=im_scale, fy=im_scale, 
+	im = cv2.resize(im_orig, None, None, fx=im_scale, fy=im_scale,
 		interpolation=cv2.INTER_LINEAR)
 	im_shape_new = np.shape(im)
 	im_use = np.zeros([1,im_shape_new[0], im_shape_new[1], im_shape_new[2]])
@@ -203,7 +204,7 @@ def rela_recall(test_roidb, pred_roidb, N_recall):
 		N_total = N_total + N_rela
 
 		N_pred = len(pred_rela)
-		
+
 		sort_score = np.sort(pred_rela_score)[::-1]
 		if N_recall >= N_pred:
 			thresh = -1
@@ -214,7 +215,7 @@ def rela_recall(test_roidb, pred_roidb, N_recall):
 		for j in range(N_pred):
 			if pred_rela_score[j] <= thresh:
 				continue
-			
+
 			for k in range(N_rela):
 				if detected_gt[k] == 1:
 					continue
@@ -270,7 +271,7 @@ def phrase_recall(test_roidb, pred_roidb, N_recall):
 		for j in range(N_pred):
 			if pred_rela_score[j] <= thresh:
 				continue
-			
+
 			for k in range(N_rela):
 				if detected_gt[k] == 1:
 					continue
@@ -410,8 +411,8 @@ def generate_train_rela_roidb(roidb, dete_box, iou_l, N_each_batch, N_each_pair)
 			sub_box_dete = sbox
 			obj_box_dete = obox
 			sub_dete = sb
-			obj_dete = ob 
-			rela_dete = rela 
+			obj_dete = ob
+			rela_dete = rela
 		else:
 			sub_box_dete = np.vstack( (sub_box_dete, sbox) )
 			obj_box_dete = np.vstack( (obj_box_dete, obox) )

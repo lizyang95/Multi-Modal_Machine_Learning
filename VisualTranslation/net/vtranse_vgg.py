@@ -15,8 +15,9 @@ from tensorflow.contrib.slim.python.slim.nets import resnet_utils
 from tensorflow.contrib.slim.python.slim.nets import resnet_v1
 from tensorflow.contrib.slim.python.slim.nets.resnet_v1 import resnet_v1_block
 import numpy as np
-from model.config import cfg 
+from model.config import cfg
 from model.ass_fun import *
+import pdb
 
 class VTranse(object):
 	def __init__(self):
@@ -70,7 +71,7 @@ class VTranse(object):
 
 	def image_to_head(self, is_training, reuse=False):
 		with tf.variable_scope(self.scope, self.scope, reuse=reuse):
-			net = slim.repeat(self.image, 2, slim.conv2d, 64, [3, 3], 
+			net = slim.repeat(self.image, 2, slim.conv2d, 64, [3, 3],
 				trainable=is_training, scope='conv1')
 			net = slim.max_pool2d(net, [2, 2], padding='SAME', scope='pool1')
 			net = slim.repeat(net, 2, slim.conv2d, 128, [3, 3],
@@ -92,17 +93,17 @@ class VTranse(object):
 		with tf.variable_scope(self.scope, self.scope, reuse=reuse):
 			pool5_flat = slim.flatten(pool5, scope='flatten')
 			fc6 = slim.fully_connected(pool5_flat, 4096, scope='fc6')
-			fc6 = slim.dropout(fc6, keep_prob=self.keep_prob, is_training=True, 
+			fc6 = slim.dropout(fc6, keep_prob=self.keep_prob, is_training=True,
 					scope='dropout6')
 			fc7 = slim.fully_connected(fc6, 4096, scope='fc7')
-			fc7 = slim.dropout(fc7, keep_prob=self.keep_prob, is_training=True, 
+			fc7 = slim.dropout(fc7, keep_prob=self.keep_prob, is_training=True,
 					scope='dropout7')
 
 			return fc7
 
 	def crop_pool_layer(self, bottom, rois, name):
 		"""
-		Notice that the input rois is a N*4 matrix, and the coordinates of x,y should be original x,y times im_scale. 
+		Notice that the input rois is a N*4 matrix, and the coordinates of x,y should be original x,y times im_scale.
 		"""
 		with tf.variable_scope(name) as scope:
 			n=tf.to_int32(rois.shape[0])
@@ -124,7 +125,7 @@ class VTranse(object):
 
 
 	def region_classification(self, fc7, is_training, reuse = False):
-		cls_score = slim.fully_connected(fc7, self.num_classes, 
+		cls_score = slim.fully_connected(fc7, self.num_classes,
 										 activation_fn=None, scope='cls_score', reuse=reuse)
 		print("cls_score's shape: {0}".format(cls_score.get_shape()))
 		cls_prob = tf.nn.softmax(cls_score, name="cls_prob")
@@ -147,12 +148,12 @@ class VTranse(object):
 			sub_fc = tf.concat([sub_fc, sub_cls_prob], axis = 1)
 			ob_fc = tf.concat([ob_fc, ob_cls_prob], axis = 1)
 
-		sub_fc1 = slim.fully_connected(sub_fc, cfg.VTR.VG_R, 
+		sub_fc1 = slim.fully_connected(sub_fc, cfg.VTR.VG_R,
 										 activation_fn=tf.nn.relu, scope='RD_sub_fc1')
-		ob_fc1 = slim.fully_connected(ob_fc, cfg.VTR.VG_R, 
+		ob_fc1 = slim.fully_connected(ob_fc, cfg.VTR.VG_R,
 										 activation_fn=tf.nn.relu, scope='RD_ob_fc1')
 		dif_fc1 = ob_fc1 - sub_fc1
-		rela_score = slim.fully_connected(dif_fc1, self.num_predicates, 
+		rela_score = slim.fully_connected(dif_fc1, self.num_predicates,
 										 activation_fn=None, scope='RD_fc2')
 		rela_prob = tf.nn.softmax(rela_score)
 		self.layers['rela_score'] = rela_score

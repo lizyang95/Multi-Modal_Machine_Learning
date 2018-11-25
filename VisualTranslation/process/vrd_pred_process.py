@@ -1,21 +1,21 @@
 # data for predicate detection
-import numpy as np 
+import numpy as np
 import xlwt
 import h5py
 import cv2
-from model.config import cfg 
+from model.config import cfg
 from model.ass_fun import *
 import json
 
 N_each_pred = cfg.VRD_BATCH_NUM
 
-train_file_path = cfg.DIR + 'dataset/VRD/json_dataset/annotations_train.json'
-test_file_path = cfg.DIR + 'dataset/VRD/json_dataset/annotations_test.json'
+train_file_path = cfg.DIR + 'dataset/VRD/json_dataset/sg_train_annotations.json'
+test_file_path = cfg.DIR + 'dataset/VRD/json_dataset/sg_test_annotations.json'
 file_path = [train_file_path, test_file_path]
 train_image_path = cfg.DIR + 'dataset/VRD/sg_dataset/sg_train_images/'
 test_image_path = cfg.DIR + 'dataset/VRD/sg_dataset/sg_test_images/'
 image_path = [train_image_path, test_image_path]
-save_path =cfg.DIR + 'vtranse/input/vrd_roidb.npz'
+save_path =cfg.DIR + 'Multi-Modal_Machine_Learning/VisualTranslation/input/vrd_roidb.npz'
 
 for r in range(2):
 	file_path_use = file_path[r]
@@ -65,7 +65,7 @@ for r in range(2):
 				sb_temp = relation['subject']['bbox']
 				ob = [ob_temp[0],ob_temp[1],ob_temp[2],ob_temp[3]]
 				sb = [sb_temp[0],sb_temp[1],sb_temp[2],sb_temp[3]]
-				
+
 				ob_new[relation_id][0:4] = [ob[2],ob[0],ob[3],ob[1]]
 				sb_new[relation_id][0:4] = [sb[2],sb[0],sb[3],sb[1]]
 
@@ -77,7 +77,7 @@ for r in range(2):
 			roidb_temp['index_pred'] = generate_batch(len(rela), N_each_pred)
 			roidb.append(roidb_temp)
 
-		if r == 0:	
+		if r == 0:
 			train_roidb = roidb
 		elif r == 1:
 			test_roidb = roidb
@@ -87,4 +87,3 @@ roidb['train_roidb'] = train_roidb
 roidb['test_roidb'] = test_roidb
 
 np.savez(save_path, roidb=roidb)
-

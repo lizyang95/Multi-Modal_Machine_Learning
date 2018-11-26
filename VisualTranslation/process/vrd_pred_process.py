@@ -24,6 +24,7 @@ for r in range(2):
 	roidb = []
 	with open(file_path_use,'r') as f:
 		data=json.load(f)
+		pdb.set_trace()
 		image_name = data.keys()
 		len_img = len(image_name)
 		t = 0

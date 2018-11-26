@@ -98,7 +98,6 @@ def compute_iou_each(box1, box2):
 		IoU = area_I/float(area1 + area2 - area_I)
 	return IoU
 
-
 def im_preprocess(image_path):
 	image = cv2.imread(image_path)
 	im_orig = image.astype(np.float32, copy=True)
@@ -320,9 +319,6 @@ def print_pred_res(test_roidb, pred_roidb, res_name, N_rela):
 		text_file.write('k: {0}, others: {1}\n'.format(k,np.where(N_pred_other[k]>0)[0]))
 	text_file.close()
 
-
-
-
 def generate_phrase_box(sbox, obox):
 	N_box = len(sbox)
 	phrase = np.zeros([N_box,4])
@@ -466,3 +462,9 @@ def generate_test_rela_roidb(roidb, dete_box, N_each_batch):
 				  'rela_dete': rela_dete}
 
 	return roidb_temp
+
+def load_dic():
+	data = np.load('../VisualTranslation/input/dic.npz')
+	data = data['dic']
+	dic = data[0]
+	return dic

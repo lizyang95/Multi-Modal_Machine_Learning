@@ -26,6 +26,7 @@ class VTranse(object):
 		self.layers = {}
 		self.feat_stride = [16, ]
 		self.scope = 'vgg_16'
+		self.dic = load_dic()
 
 	def create_graph(self, N_each_batch, index_sp, index_cls,lan_prio, num_classes, num_predicates):
 		self.image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
@@ -43,6 +44,7 @@ class VTranse(object):
 		self.N_each_batch = N_each_batch
 
 		self.build_dete_network()
+		self.build_lan_network()
 		self.build_rd_network()
 		self.add_rd_loss()
 
@@ -134,6 +136,13 @@ class VTranse(object):
 
 		return cls_prob, cls_pred
 
+	def build_lan_network(self):
+		sub_pred = self.predictions['sub_cls_pred']
+		obj_pred = self.predictions['ob_cls_pred']
+		self.layers['sub_lan'] = self.layers['sub_fc7']
+		self.layers['obj_lan'] = self.layers['ob_fc7']
+
+
 	def build_rd_network(self):
 		sub_sp_info = self.sub_sp_info
 		ob_sp_info = self.ob_sp_info
@@ -141,6 +150,8 @@ class VTranse(object):
 		ob_cls_prob = self.predictions['ob_cls_prob']
 		sub_fc = self.layers['sub_fc7']
 		ob_fc = self.layers['ob_fc7']
+		sub_lan = self.layers['sub_lan']
+		obj_lan = self.layers['obj_lan']
 
 		if self.index_sp:
 			sub_fc = tf.concat([sub_fc, sub_sp_info], axis = 1)
@@ -148,6 +159,9 @@ class VTranse(object):
 		if self.index_cls:
 			sub_fc = tf.concat([sub_fc, sub_cls_prob], axis = 1)
 			ob_fc = tf.concat([ob_fc, ob_cls_prob], axis = 1)
+		if self.lan_prio:
+			sub_fc = tf.concat([sub_fc, sub_lan], axis = 1)
+			ob_fc = tf.concat([ob_fc, obj_lan], axis = 1)
 
 		sub_fc1 = slim.fully_connected(sub_fc, cfg.VTR.VG_R,
 										 activation_fn=tf.nn.relu, scope='RD_sub_fc1')

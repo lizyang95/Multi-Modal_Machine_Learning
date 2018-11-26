@@ -27,7 +27,7 @@ class VTranse(object):
 		self.feat_stride = [16, ]
 		self.scope = 'vgg_16'
 
-	def create_graph(self, N_each_batch, index_sp, index_cls, num_classes, num_predicates):
+	def create_graph(self, N_each_batch, index_sp, index_cls,lan_prio, num_classes, num_predicates):
 		self.image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
 		self.sbox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
 		self.obox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
@@ -37,6 +37,7 @@ class VTranse(object):
 		self.keep_prob = tf.placeholder(tf.float32)
 		self.index_sp = index_sp
 		self.index_cls = index_cls
+		self.lan_prio = lan_prio
 		self.num_classes = num_classes
 		self.num_predicates = num_predicates
 		self.N_each_batch = N_each_batch
@@ -68,6 +69,7 @@ class VTranse(object):
 		self.layers['ob_pool5'] = ob_pool5
 		self.layers['sub_fc7'] = sub_fc7
 		self.layers['ob_fc7'] = ob_fc7
+
 
 	def image_to_head(self, is_training, reuse=False):
 		with tf.variable_scope(self.scope, self.scope, reuse=reuse):

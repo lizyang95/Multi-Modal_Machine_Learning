@@ -21,9 +21,10 @@ config.gpu_options.allow_growth = True
 
 index_sp = False
 index_cls = False
+lan_prio = True
 
 vnet = VTranse()
-vnet.create_graph(N_each_batch, index_sp, index_cls, N_cls, N_rela)
+vnet.create_graph(N_each_batch, index_sp, index_cls,lan_prio, N_cls, N_rela)
 
 roidb_path = cfg.DIR + 'VisualTranslation/input/vrd_roidb.npz'
 res_path = cfg.DIR + 'VisualTranslation/pretrained_para/vrd_vgg_pretrained.ckpt'

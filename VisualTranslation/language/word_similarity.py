@@ -70,6 +70,9 @@ def cosine_similarity_tensorflow(tf_word_representation_A, tf_words_representati
 
 tf.reset_default_graph()
 
+word_to_index = load_word_to_index(
+    DICT_WORD_TO_INDEX_FILE_NAME)
+    
 
 # Transpose word_to_index dict:
 index_to_word = dict((val, key) for key, val in word_to_index.items())
@@ -123,7 +126,7 @@ nb_similar_words_to_get = 10
 
 
 word = "king"
-word_id = tf_word_to_index[word]
+word_id = word_to_index[word]
 
 top_cosine_similarities, top_word_indices, top_words_representation = sess.run(
     [tf_top_cosine_similarities, tf_top_word_indices, tf_top_words_representation],

@@ -46,6 +46,7 @@ __C.VRD_BATCH_NUM_RELA = 50
 __C.VRD_AU_PAIR = 5
 __C.VRD_IOU_TRAIN = 0.5
 __C.VRD_IOU_TEST = 0.5
+__C.VRD_WORD_DIM = 256
 ###########################
 
 __C.IM_SIZE = 600

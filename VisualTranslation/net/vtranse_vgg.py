@@ -28,7 +28,8 @@ class VTranse(object):
 		self.scope = 'vgg_16'
 		self.dic = load_dic()
 
-	def create_graph(self, N_each_batch, index_sp, index_cls,lan_prio, num_classes, num_predicates):
+	def create_graph(self, N_each_batch, index_sp, index_cls,lan_prio,
+	 					   num_classes, num_predicates, word_dim):
 		self.image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
 		self.sbox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
 		self.obox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
@@ -36,6 +37,8 @@ class VTranse(object):
 		self.ob_sp_info = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
 		self.rela_label = tf.placeholder(tf.int32, shape=[N_each_batch,])
 		self.keep_prob = tf.placeholder(tf.float32)
+		self.sub_lan_embedding = tf.placeholder(tf.float32,shape=[N_each_batch,word_dim])
+		self.obj_lan_embedding = tf.placeholder(tf.float32,shape=[N_each_batch,word_dim])
 		self.index_sp = index_sp
 		self.index_cls = index_cls
 		self.lan_prio = lan_prio
@@ -47,7 +50,6 @@ class VTranse(object):
 		self.build_lan_network()
 		self.build_rd_network()
 		self.add_rd_loss()
-
 
 	def build_dete_network(self, is_training=True):
 		net_conv = self.image_to_head(is_training)
@@ -71,7 +73,6 @@ class VTranse(object):
 		self.layers['ob_pool5'] = ob_pool5
 		self.layers['sub_fc7'] = sub_fc7
 		self.layers['ob_fc7'] = ob_fc7
-
 
 	def image_to_head(self, is_training, reuse=False):
 		with tf.variable_scope(self.scope, self.scope, reuse=reuse):
@@ -141,7 +142,6 @@ class VTranse(object):
 		obj_pred = self.predictions['ob_cls_pred']
 		self.layers['sub_lan'] = self.layers['sub_fc7']
 		self.layers['obj_lan'] = self.layers['ob_fc7']
-
 
 	def build_rd_network(self):
 		sub_sp_info = self.sub_sp_info

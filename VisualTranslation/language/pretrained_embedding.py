@@ -32,7 +32,7 @@ if not os.path.exists(ZIP_FILE) and not os.path.exists(UNZIP_FOLDER):
     #     http://nlp.stanford.edu/data/glove.twitter.27B.zip
     #     Copyright 2014 The Board of Trustees of The Leland Stanford Junior University
     print("Downloading embeddings to '{}'".format(ZIP_FILE))
-    chakin.download(number=CHAKIN_INDEX, save_dir='./{}'.format(DATA_FOLDER))
+    # chakin.download(number=CHAKIN_INDEX, save_dir='./{}'.format(DATA_FOLDER))
 else:
     print("Embeddings already downloaded.")
 
@@ -91,3 +91,20 @@ def load_embedding_from_disks(glove_filename, with_indexes=True):
 print("Loading embedding from disks...")
 word_to_index, index_to_embedding = load_embedding_from_disks(GLOVE_FILENAME, with_indexes=True)
 print("Embedding loaded from disks.")
+
+vocab_size, embedding_dim = index_to_embedding.shape
+print("Embedding is of shape: {}".format(index_to_embedding.shape))
+print("This means (number of words, number of dimensions per word)\n")
+print("The first words are words that tend occur more often.")
+
+print("Note: for unknown words, the representation is an empty vector,\n"
+      "and the index is the last one. The dictionnary has a limit:")
+print("    {} --> {} --> {}".format("A word", "Index in embedding", "Representation"))
+word = "worsdfkljsdf"
+idx = word_to_index[word]
+embd = list(np.array(index_to_embedding[idx], dtype=int))  # "int" for compact print only.
+print("    {} --> {} --> {}".format(word, idx, embd))
+word = "the"
+idx = word_to_index[word]
+embd = list(index_to_embedding[idx])  # "int" for compact print only.
+print("    {} --> {} --> {}".format(word, idx, embd))

@@ -18,7 +18,56 @@ SUFFIX = SUBFOLDER_NAME + "." + str(word_representations_dimensions)
 TF_EMBEDDINGS_FILE_PATH = os.path.join(DATA_FOLDER, SUFFIX + "d.ckpt")
 DICT_WORD_TO_INDEX_FILE_NAME = os.path.join(DATA_FOLDER, SUFFIX + "d.json")
 
+def load_word_to_index(dict_word_to_index_file_name):
+    """
+    Load a `word_to_index` dict mapping words to their id, with a default value
+    of pointing to the last index when not found, which is the unknown word.
+    """
+    with open(dict_word_to_index_file_name, 'r') as f:
+        word_to_index = json.load(f)
+    _LAST_INDEX = len(word_to_index) - 2  # Why - 2? Open issue?
+    print("word_to_index dict restored from '{}'.".format(dict_word_to_index_file_name))
+    word_to_index = defaultdict(lambda: _LAST_INDEX, word_to_index)
 
+    return word_to_index
+
+def load_embedding_tf(word_to_index, tf_embeddings_file_path, nb_dims):
+    """
+    Define the embedding tf.Variable and load it.
+    """
+    # 1. Define the variable that will hold the embedding:
+    tf_embedding = tf.Variable(
+        tf.constant(0.0, shape=[len(word_to_index)-1, nb_dims]),
+        trainable=False,
+        name="Embedding"
+    )
+
+    # 2. Restore the embedding from disks to TensorFlow, GPU (or CPU if GPU unavailable):
+    variables_to_restore = [tf_embedding]
+    embedding_saver = tf.train.Saver(variables_to_restore)
+    embedding_saver.restore(sess, save_path=tf_embeddings_file_path)
+    print("TF embeddings restored from '{}'.".format(tf_embeddings_file_path))
+
+    return tf_embedding
+
+def cosine_similarity_tensorflow(tf_word_representation_A, tf_words_representation_B):
+    """
+    Returns the `cosine_similarity = cos(angle_between_a_and_b_in_space)`
+    for the two word A to all the words B.
+    The first input word must be a 1D Tensors (word_representation).
+    The second input words must be 2D Tensors (batch_size, word_representation).
+    The result is a tf tensor that must be fetched with `sess.run`.
+    """
+    a_normalized = tf.nn.l2_normalize(tf_word_representation_A, axis=-1)
+    b_normalized = tf.nn.l2_normalize(tf_words_representation_B, axis=-1)
+    similarity = tf.reduce_sum(
+        tf.multiply(a_normalized, b_normalized),
+        axis=-1
+    )
+
+    return similarity
+
+    
 tf.reset_default_graph()
 
 

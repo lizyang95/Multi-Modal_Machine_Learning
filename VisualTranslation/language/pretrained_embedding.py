@@ -6,6 +6,8 @@ import json
 import os
 from collections import defaultdict
 
+from model.ass_fun import *
+
 chakin.search(lang='English')
 
 CHAKIN_INDEX = 17
@@ -143,7 +145,8 @@ del index_to_embedding
 
 
 # test on a batch of word
-batch_of_words = ["Hello", "World", "!"]
+dic = load_dic()
+batch_of_words = list(dic.values())
 batch_indexes = [word_to_index[w.lower()] for w in batch_of_words]
 
 embedding_from_batch_lookup = sess.run(
@@ -166,6 +169,6 @@ embedding_saver.save(sess, save_path=TF_EMBEDDINGS_FILE_NAME)
 print("TF embeddings saved to '{}'.".format(TF_EMBEDDINGS_FILE_NAME))
 sess.close()
 
-with open(DICT_WORD_TO_INDEX_FILE_NAME, 'w') as f:
-    json.dump(word_to_index, f)
-print("word_to_index dict saved to '{}'.".format(DICT_WORD_TO_INDEX_FILE_NAME))
+# with open(DICT_WORD_TO_INDEX_FILE_NAME, 'w') as f:
+#     json.dump(word_to_index, f)
+# print("word_to_index dict saved to '{}'.".format(DICT_WORD_TO_INDEX_FILE_NAME))

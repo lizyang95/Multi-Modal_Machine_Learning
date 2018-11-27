@@ -6,6 +6,10 @@ import json
 from string import punctuation
 from collections import defaultdict
 
+gpu = cfg.GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
 
 batch_size = None  # Any size is accepted
 word_representations_dimensions = 25  # Embedding of size (vocab_len, nb_dimensions)

@@ -7,6 +7,12 @@ from string import punctuation
 from collections import defaultdict
 
 
+gpu = cfg.GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+
+
 batch_size = None  # Any size is accepted
 word_representations_dimensions = 25  # Embedding of size (vocab_len, nb_dimensions)
 
@@ -72,7 +78,7 @@ tf.reset_default_graph()
 
 word_to_index = load_word_to_index(
     DICT_WORD_TO_INDEX_FILE_NAME)
-    
+
 
 # Transpose word_to_index dict:
 index_to_word = dict((val, key) for key, val in word_to_index.items())

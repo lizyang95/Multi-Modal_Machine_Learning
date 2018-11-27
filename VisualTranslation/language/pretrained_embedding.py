@@ -14,6 +14,10 @@ CHAKIN_INDEX = 17
 NUMBER_OF_DIMENSIONS = 25
 SUBFOLDER_NAME = "glove.twitter.27B"
 
+gpu = cfg.GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
 
 # download Twitter.25d embeddings from Standford
 DATA_FOLDER = "embeddings"

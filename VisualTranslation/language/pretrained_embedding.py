@@ -87,3 +87,7 @@ def load_embedding_from_disks(glove_filename, with_indexes=True):
     else:
         word_to_embedding_dict = defaultdict(lambda: _WORD_NOT_FOUND)
         return word_to_embedding_dict
+
+print("Loading embedding from disks...")
+word_to_index, index_to_embedding = load_embedding_from_disks(GLOVE_FILENAME, with_indexes=True)
+print("Embedding loaded from disks.")

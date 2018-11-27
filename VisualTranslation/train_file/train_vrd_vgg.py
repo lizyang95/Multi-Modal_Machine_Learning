@@ -13,6 +13,7 @@ N_cls = cfg.VRD_NUM_CLASS
 N_rela = cfg.VRD_NUM_RELA
 N_each_batch = cfg.VRD_BATCH_NUM
 lr_init = cfg.VRD_LR_INIT
+word_dim = cfg.VRD_WORD_DIM
 
 gpu = cfg.GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
@@ -24,7 +25,7 @@ index_cls = False
 lan_prio = True
 
 vnet = VTranse()
-vnet.create_graph(N_each_batch, index_sp, index_cls,lan_prio, N_cls, N_rela)
+vnet.create_graph(N_each_batch, index_sp, index_cls,lan_prio, N_cls, N_rela, word_dim)
 
 roidb_path = cfg.DIR + 'VisualTranslation/input/vrd_roidb.npz'
 res_path = cfg.DIR + 'VisualTranslation/pretrained_para/vrd_vgg_pretrained.ckpt'

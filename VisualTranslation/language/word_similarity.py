@@ -6,6 +6,8 @@ import json
 from string import punctuation
 from collections import defaultdict
 
+from model.config import cfg
+
 gpu = cfg.GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 config = tf.ConfigProto()

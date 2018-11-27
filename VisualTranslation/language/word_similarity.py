@@ -1,3 +1,24 @@
+import numpy as np
+import tensorflow as tf
+
+import os
+import json
+from string import punctuation
+from collections import defaultdict
+
+
+batch_size = None  # Any size is accepted
+word_representations_dimensions = 25  # Embedding of size (vocab_len, nb_dimensions)
+
+
+DATA_FOLDER = "embeddings"
+SUBFOLDER_NAME = "glove.twitter.27B"
+TF_EMBEDDING_FILE_NAME = "{}.ckpt".format(SUBFOLDER_NAME)
+SUFFIX = SUBFOLDER_NAME + "." + str(word_representations_dimensions)
+TF_EMBEDDINGS_FILE_PATH = os.path.join(DATA_FOLDER, SUFFIX + "d.ckpt")
+DICT_WORD_TO_INDEX_FILE_NAME = os.path.join(DATA_FOLDER, SUFFIX + "d.json")
+
+
 tf.reset_default_graph()
 
 

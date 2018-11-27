@@ -8,8 +8,6 @@ from collections import defaultdict
 
 chakin.search(lang='English')
 
-# Downloading Twitter.25d embeddings from Stanford:
-
 CHAKIN_INDEX = 17
 NUMBER_OF_DIMENSIONS = 25
 SUBFOLDER_NAME = "glove.twitter.27B"
@@ -88,6 +86,7 @@ def load_embedding_from_disks(glove_filename, with_indexes=True):
         word_to_embedding_dict = defaultdict(lambda: _WORD_NOT_FOUND)
         return word_to_embedding_dict
 
+# test loading embedding
 print("Loading embedding from disks...")
 word_to_index, index_to_embedding = load_embedding_from_disks(GLOVE_FILENAME, with_indexes=True)
 print("Embedding loaded from disks.")
@@ -108,3 +107,65 @@ word = "the"
 idx = word_to_index[word]
 embd = list(index_to_embedding[idx])  # "int" for compact print only.
 print("    {} --> {} --> {}".format(word, idx, embd))
+
+
+# load the embedding in tensorflow
+
+batch_size = None  # Any size is accepted
+
+tf.reset_default_graph()
+sess = tf.InteractiveSession()  # sess = tf.Session()
+
+# Define the variable that will hold the embedding:
+tf_embedding = tf.Variable(
+    tf.constant(0.0, shape=index_to_embedding.shape),
+    trainable=False,
+    name="Embedding"
+)
+
+tf_word_ids = tf.placeholder(tf.int32, shape=[batch_size])
+
+tf_word_representation_layer = tf.nn.embedding_lookup(
+    params=tf_embedding,
+    ids=tf_word_ids
+)
+tf_embedding_placeholder = tf.placeholder(tf.float32, shape=index_to_embedding.shape)
+tf_embedding_init = tf_embedding.assign(tf_embedding_placeholder)
+_ = sess.run(
+    tf_embedding_init,
+    feed_dict={
+        tf_embedding_placeholder: index_to_embedding
+    }
+)
+
+print("Embedding now stored in TensorFlow. Can delete numpy array to clear some CPU RAM.")
+del index_to_embedding
+
+
+# test on a batch of word
+batch_of_words = ["Hello", "World", "!"]
+batch_indexes = [word_to_index[w.lower()] for w in batch_of_words]
+
+embedding_from_batch_lookup = sess.run(
+    tf_word_representation_layer,
+    feed_dict={
+        tf_word_ids: batch_indexes
+    }
+)
+print("Representations for {}:".format(batch_of_words))
+print(embedding_from_batch_lookup)
+
+# save word_to_index
+prefix = SUBFOLDER_NAME + "." + str(NUMBER_OF_DIMENSIONS) + "d"
+TF_EMBEDDINGS_FILE_NAME = os.path.join(DATA_FOLDER, prefix + ".ckpt")
+DICT_WORD_TO_INDEX_FILE_NAME = os.path.join(DATA_FOLDER, prefix + ".json")
+
+variables_to_save = [tf_embedding]
+embedding_saver = tf.train.Saver(variables_to_save)
+embedding_saver.save(sess, save_path=TF_EMBEDDINGS_FILE_NAME)
+print("TF embeddings saved to '{}'.".format(TF_EMBEDDINGS_FILE_NAME))
+sess.close()
+
+with open(DICT_WORD_TO_INDEX_FILE_NAME, 'w') as f:
+    json.dump(word_to_index, f)
+print("word_to_index dict saved to '{}'.".format(DICT_WORD_TO_INDEX_FILE_NAME))

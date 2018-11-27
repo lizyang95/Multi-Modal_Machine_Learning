@@ -468,3 +468,5 @@ def load_dic():
 	data = data['dic']
 	dic = data[0]
 	return dic
+
+	

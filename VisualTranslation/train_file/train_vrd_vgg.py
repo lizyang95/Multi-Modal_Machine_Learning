@@ -6,7 +6,7 @@
 # import numpy as np
 # from model.config import cfg
 # from model.ass_fun import *
-# from net.vtranse_vgg import VTranse
+# from net.nse_vgg import nse
 # import pdb
 #
 # N_cls = cfg.VRD_NUM_CLASS
@@ -24,7 +24,7 @@
 # index_cls = False
 # lan_prio = True
 #
-# vnet = VTranse()
+# vnet = nse()
 # vnet.create_graph(N_each_batch, index_sp, index_cls,lan_prio, N_cls, N_rela, word_dim)
 #
 # roidb_path = cfg.DIR + 'VisualTranslation/input/vrd_roidb.npz'
@@ -104,7 +104,7 @@ import tensorflow as tf
 import numpy as np
 from model.config import cfg
 from model.ass_fun import *
-from net.vtranse_vgg import VTranse
+from net.nse_vgg import nse
 
 N_cls = cfg.VRD_NUM_CLASS
 N_rela = cfg.VRD_NUM_RELA
@@ -115,11 +115,11 @@ lr_init = cfg.VRD_LR_INIT
 index_sp = False
 index_cls = False
 
-vnet = VTranse()
+vnet = nse()
 vnet.create_graph(N_each_batch, index_sp, index_cls, N_cls, N_rela)
 
-roidb_path = cfg.DIR + 'vtranse/input/vrd_roidb.npz'
-res_path = cfg.DIR + 'vtranse/pretrained_para/vrd_vgg_pretrained.ckpt'
+roidb_path = cfg.DIR + 'VisualTranslation/input/vrd_roidb.npz'
+res_path = cfg.DIR + 'VisualTranslation/pretrained_para/vrd_vgg_pretrained.ckpt'
 
 roidb_read = read_roidb(roidb_path)
 train_roidb = roidb_read['train_roidb']
@@ -171,7 +171,7 @@ with tf.Session() as sess:
 				rd_loss = 0.0
 				acc = 0.0
 			if t % N_save == 0:
-				save_path = cfg.DIR + 'vtranse/pred_para/vrd_vgg/vrd_vgg' + format(int(t/N_save),'04') + '.ckpt'
+				save_path = cfg.DIR + 'nse/pred_para/vrd_vgg/vrd_vgg' + format(int(t/N_save),'04') + '.ckpt'
 				print("saving model to {0}".format(save_path))
 				saver.save(sess, save_path)
 				rd_loss_val = 0.0

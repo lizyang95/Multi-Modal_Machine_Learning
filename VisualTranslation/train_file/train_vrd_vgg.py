@@ -166,6 +166,8 @@ with tf.Session() as sess:
 			roidb_use = train_roidb[roidb_id]
 			if len(roidb_use['rela_gt']) == 0:
 				continue
+			roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
+
 			rd_loss_temp, acc_temp = vnet.train_predicate(sess, roidb_use, RD_train)
 			rd_loss = rd_loss + rd_loss_temp
 			acc = acc + acc_temp

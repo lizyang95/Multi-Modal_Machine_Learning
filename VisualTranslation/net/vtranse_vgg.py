@@ -369,7 +369,7 @@
 # from model.config import cfg
 # from model.ass_fun import *
 #
-# class VTranse(object):
+# class nse(object):
 # 	def __init__(self):
 # 		self.predictions = {}
 # 		self.losses = {}
@@ -688,7 +688,7 @@
 # def leaky_relu(x, alpha):
 # 	return tf.maximum(x, alpha * x)
 
-#for build_rd_network2
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

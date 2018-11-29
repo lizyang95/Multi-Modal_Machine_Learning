@@ -141,7 +141,7 @@ class VTranse(object):
 		ob_sp_info = self.ob_sp_info
 		sub_cls_prob = self.predictions['sub_cls_prob']
 		ob_cls_prob = self.predictions['ob_cls_prob']
-		ob_cls_pred = self.predictions['ob_cls_pred']
+		sub_cls_pred = self.predictions['sub_cls_pred']
 		ob_cls_pred = self.predictions['ob_cls_pred']
 		sub_fc = self.layers['sub_fc7']
 		ob_fc = self.layers['ob_fc7']

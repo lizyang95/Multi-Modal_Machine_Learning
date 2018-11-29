@@ -156,8 +156,9 @@ class VTranse(object):
 			sub_fc = tf.concat([sub_fc, sub_cls_prob], axis = 1)
 			ob_fc = tf.concat([ob_fc, ob_cls_prob], axis = 1)
 		if self.lan_prio:
-			sub_fc = tf.concat([sub_fc, sub_lan], axis = 1)
-			ob_fc = tf.concat([ob_fc, obj_lan], axis = 1)
+			for i in range(40):
+				sub_fc = tf.concat([sub_fc, sub_lan], axis = 1)
+				ob_fc = tf.concat([ob_fc, obj_lan], axis = 1)
 
 		sub_fc1 = slim.fully_connected(sub_fc, cfg.VTR.VG_R,
 										 activation_fn=tf.nn.relu, scope='RD_sub_fc1')

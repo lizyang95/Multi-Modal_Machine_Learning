@@ -146,7 +146,7 @@ class VTranse(object):
 		sub_fc = self.layers['sub_fc7']
 		ob_fc = self.layers['ob_fc7']
 		sub_lan = tf.gather(self.embedding_map,sub_cls_pred)
-		obj_lan = tf.gather(self.embedding_map,obj_cls_pres)
+		obj_lan = tf.gather(self.embedding_map,ob_cls_pres)
 
 
 		if self.index_sp:

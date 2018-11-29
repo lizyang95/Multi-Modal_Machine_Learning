@@ -10,9 +10,9 @@ from model.ass_fun import *
 
 chakin.search(lang='English')
 
-CHAKIN_INDEX = 17
-NUMBER_OF_DIMENSIONS = 25
-SUBFOLDER_NAME = "glove.twitter.27B"
+CHAKIN_INDEX = 16
+NUMBER_OF_DIMENSIONS = 300
+SUBFOLDER_NAME = "glove.840B"
 
 gpu = cfg.GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu
@@ -36,7 +36,7 @@ if not os.path.exists(ZIP_FILE) and not os.path.exists(UNZIP_FOLDER):
     #     http://nlp.stanford.edu/data/glove.twitter.27B.zip
     #     Copyright 2014 The Board of Trustees of The Leland Stanford Junior University
     print("Downloading embeddings to '{}'".format(ZIP_FILE))
-    # chakin.download(number=CHAKIN_INDEX, save_dir='./{}'.format(DATA_FOLDER))
+    chakin.download(number=CHAKIN_INDEX, save_dir='./{}'.format(DATA_FOLDER))
 else:
     print("Embeddings already downloaded.")
 

@@ -10,9 +10,9 @@ from model.ass_fun import *
 
 chakin.search(lang='English')
 
-CHAKIN_INDEX = 16
+CHAKIN_INDEX = 14
 NUMBER_OF_DIMENSIONS = 300
-SUBFOLDER_NAME = "glove.840B.300d"
+SUBFOLDER_NAME = "glove.6B.300d"
 
 gpu = cfg.GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu

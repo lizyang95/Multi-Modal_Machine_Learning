@@ -83,7 +83,7 @@ with tf.Session() as sess:
 				rd_loss = 0.0
 				acc = 0.0
 			if t % N_save == 0:
-				save_path = cfg.DIR + 'vtranse/pred_para/vrd_vgg/vrd_vgg' + format(int(t/N_save),'04') + '.ckpt'
+				save_path = cfg.DIR + 'VisualTranslation/pred_para/vrd_vgg/vrd_vgg' + format(int(t/N_save),'04') + '.ckpt'
 				print("saving model to {0}".format(save_path))
 				saver.save(sess, save_path)
 				rd_loss_val = 0.0

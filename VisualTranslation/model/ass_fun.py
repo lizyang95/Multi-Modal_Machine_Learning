@@ -476,5 +476,6 @@ def load_embedding():
 	return embedding
 
 def reformat_name(name):
-
-	return name
+	pre_list = name.split('/')
+	act_list = pre_list[-5:]
+	return cfg.DIR + '/'.join(act_list)

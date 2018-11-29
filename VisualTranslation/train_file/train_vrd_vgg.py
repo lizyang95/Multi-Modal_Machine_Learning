@@ -132,6 +132,7 @@ N_save = N_train
 N_val = N_test
 
 total_var = tf.trainable_variables()
+
 restore_var = [var for var in total_var if 'vgg_16' in var.name]
 cls_score_var = [var for var in total_var if 'cls_score' in var.name]
 res_var = [item for item in restore_var if item not in cls_score_var]

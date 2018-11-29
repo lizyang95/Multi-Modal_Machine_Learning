@@ -92,6 +92,7 @@ with tf.Session() as sess:
 					roidb_use = test_roidb[val_id]
 					if len(roidb_use['rela_gt']) == 0:
 						continue
+					roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
 					rd_loss_temp, acc_temp = vnet.val_predicate(sess, roidb_use)
 					rd_loss_val = rd_loss_val + rd_loss_temp
 					acc_val = acc_val + acc_temp

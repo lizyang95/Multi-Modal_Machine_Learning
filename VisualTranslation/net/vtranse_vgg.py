@@ -45,6 +45,7 @@ class VTranse(object):
 		self.num_classes = num_classes
 		self.num_predicates = num_predicates
 		self.N_each_batch = N_each_batch
+		self.embedding_map = load_embedding()
 
 		self.build_dete_network()
 		self.build_lan_network()

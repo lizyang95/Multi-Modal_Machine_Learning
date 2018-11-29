@@ -29,7 +29,7 @@ class VTranse(object):
 		self.dic = load_dic()
 
 	def create_graph(self, N_each_batch, index_sp, index_cls,lan_prio,
-	 					   num_classes, num_predicates, word_dim):
+	 					   num_classes, num_predicates, word_dim=25):
 		self.image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
 		self.sbox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
 		self.obox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
@@ -37,18 +37,15 @@ class VTranse(object):
 		self.ob_sp_info = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
 		self.rela_label = tf.placeholder(tf.int32, shape=[N_each_batch,])
 		self.keep_prob = tf.placeholder(tf.float32)
-		self.sub_lan_embedding = tf.placeholder(tf.float32,shape=[N_each_batch,word_dim])
-		self.obj_lan_embedding = tf.placeholder(tf.float32,shape=[N_each_batch,word_dim])
 		self.index_sp = index_sp
 		self.index_cls = index_cls
 		self.lan_prio = lan_prio
 		self.num_classes = num_classes
 		self.num_predicates = num_predicates
 		self.N_each_batch = N_each_batch
-		self.embedding_map = load_embedding()
+		self.embedding_map = tf.convert_to_tensor(load_embedding(),dtype=tf.float32,name='language_embedding')
 
 		self.build_dete_network()
-		self.build_lan_network()
 		self.build_rd_network()
 		self.add_rd_loss()
 
@@ -138,21 +135,19 @@ class VTranse(object):
 
 		return cls_prob, cls_pred
 
-	def build_lan_network(self):
-		sub_pred = self.predictions['sub_cls_pred']
-		obj_pred = self.predictions['ob_cls_pred']
-		self.layers['sub_lan'] = self.layers['sub_fc7']
-		self.layers['obj_lan'] = self.layers['ob_fc7']
 
 	def build_rd_network(self):
 		sub_sp_info = self.sub_sp_info
 		ob_sp_info = self.ob_sp_info
 		sub_cls_prob = self.predictions['sub_cls_prob']
 		ob_cls_prob = self.predictions['ob_cls_prob']
+		ob_cls_pred = self.predictions['ob_cls_pred']
+		ob_cls_pred = self.predictions['ob_cls_pred']
 		sub_fc = self.layers['sub_fc7']
 		ob_fc = self.layers['ob_fc7']
-		sub_lan = self.layers['sub_lan']
-		obj_lan = self.layers['obj_lan']
+		sub_lan = tf.gather(self.embedding_map,sub_cls_pred)
+		obj_lan = tf.gather(self.embedding_map,obj_cls_pres)
+
 
 		if self.index_sp:
 			sub_fc = tf.concat([sub_fc, sub_sp_info], axis = 1)

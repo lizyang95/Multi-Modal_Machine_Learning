@@ -476,4 +476,5 @@ def load_embedding():
 	return embedding
 
 def reformat_name(name):
+
 	return name

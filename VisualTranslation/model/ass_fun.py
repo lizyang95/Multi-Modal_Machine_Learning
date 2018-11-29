@@ -474,3 +474,6 @@ def load_embedding():
 	data = data['embedding']
 	embedding = data[0]
 	return embedding
+
+def reformat_name(name):
+	

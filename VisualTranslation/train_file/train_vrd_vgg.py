@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 from model.config import cfg
 from model.ass_fun import *
-from net.nse_vgg import nse
+from net.vtranse_vgg import VTranse
 import pdb
 
 N_cls = cfg.VRD_NUM_CLASS
@@ -24,7 +24,7 @@ index_sp = False
 index_cls = False
 lan_prio = True
 
-vnet = nse()
+vnet = VTranse()
 vnet.create_graph(N_each_batch, index_sp, index_cls,lan_prio, N_cls, N_rela, word_dim)
 
 roidb_path = cfg.DIR + 'VisualTranslation/input/vrd_roidb.npz'
@@ -93,6 +93,7 @@ with tf.Session() as sess:
 					if len(roidb_use['rela_gt']) == 0:
 						continue
 					roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
+
 					rd_loss_temp, acc_temp = vnet.val_predicate(sess, roidb_use)
 					rd_loss_val = rd_loss_val + rd_loss_temp
 					acc_val = acc_val + acc_temp
@@ -191,5 +192,3 @@ with tf.Session() as sess:
 # 					rd_loss_val = rd_loss_val + rd_loss_temp
 # 					acc_val = acc_val + acc_temp
 # 				print("val: rd_loss: {0}, acc: {1}".format(rd_loss_val/N_val, acc_val/N_val))
-
-

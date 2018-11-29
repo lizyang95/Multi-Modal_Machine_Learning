@@ -112,6 +112,10 @@ N_rela = cfg.VRD_NUM_RELA
 N_each_batch = cfg.VRD_BATCH_NUM
 lr_init = cfg.VRD_LR_INIT
 
+gpu = cfg.GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
 
 index_sp = False
 index_cls = False
@@ -162,6 +166,8 @@ with tf.Session() as sess:
 			roidb_use = train_roidb[roidb_id]
 			if len(roidb_use['rela_gt']) == 0:
 				continue
+			roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
+
 			rd_loss_temp, acc_temp = vnet.train_predicate(sess, roidb_use, RD_train)
 			rd_loss = rd_loss + rd_loss_temp
 			acc = acc + acc_temp
@@ -180,6 +186,7 @@ with tf.Session() as sess:
 					roidb_use = test_roidb[val_id]
 					if len(roidb_use['rela_gt']) == 0:
 						continue
+					roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
 					rd_loss_temp, acc_temp = vnet.val_predicate(sess, roidb_use)
 					rd_loss_val = rd_loss_val + rd_loss_temp
 					acc_val = acc_val + acc_temp

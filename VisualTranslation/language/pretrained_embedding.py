@@ -12,7 +12,7 @@ chakin.search(lang='English')
 
 CHAKIN_INDEX = 16
 NUMBER_OF_DIMENSIONS = 300
-SUBFOLDER_NAME = "glove.840B"
+SUBFOLDER_NAME = "glove.840B.300d"
 
 gpu = cfg.GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu

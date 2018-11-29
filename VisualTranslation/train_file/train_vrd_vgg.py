@@ -191,3 +191,5 @@ with tf.Session() as sess:
 # 					rd_loss_val = rd_loss_val + rd_loss_temp
 # 					acc_val = acc_val + acc_temp
 # 				print("val: rd_loss: {0}, acc: {1}".format(rd_loss_val/N_val, acc_val/N_val))
+
+

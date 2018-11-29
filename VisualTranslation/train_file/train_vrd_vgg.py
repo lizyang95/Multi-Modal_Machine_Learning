@@ -67,6 +67,7 @@ with tf.Session() as sess:
 	t = 0.0
 	rd_loss = 0.0
 	acc = 0.0
+	val_acc = []
 	for r in range(N_round):
 		for roidb_id in range(N_train):
 			roidb_use = train_roidb[roidb_id]
@@ -98,7 +99,8 @@ with tf.Session() as sess:
 					rd_loss_val = rd_loss_val + rd_loss_temp
 					acc_val = acc_val + acc_temp
 				print("val: rd_loss: {0}, acc: {1}".format(rd_loss_val/N_val, acc_val/N_val))
-
+				val_acc.append(acc_val/N_val)
+np.savez('val_acc.npz',val_acc=val_acc)
 # #for build_rd_network2
 # from __future__ import absolute_import
 # from __future__ import division

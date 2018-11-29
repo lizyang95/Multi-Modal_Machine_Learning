@@ -112,6 +112,10 @@ N_rela = cfg.VRD_NUM_RELA
 N_each_batch = cfg.VRD_BATCH_NUM
 lr_init = cfg.VRD_LR_INIT
 
+gpu = cfg.GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
 
 index_sp = False
 index_cls = False

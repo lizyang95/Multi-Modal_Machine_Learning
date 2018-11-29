@@ -57,7 +57,7 @@ optimizer = tf.train.AdamOptimizer(learning_rate=lr_init)
 train_loss = vnet.losses['rd_loss']
 RD_train = optimizer.minimize(train_loss, var_list = RD_var)
 
-pdb.set_trace()
+# pdb.set_trace()
 
 with tf.Session() as sess:
 	init = tf.global_variables_initializer()
@@ -73,7 +73,7 @@ with tf.Session() as sess:
 			if len(roidb_use['rela_gt']) == 0:
 				continue
 			roidb_use['image'] = cfg.DIR + roidb_use['image'][24:]
-			pdb.set_trace()
+			# pdb.set_trace()
 			rd_loss_temp, acc_temp = vnet.train_predicate(sess, roidb_use, RD_train)
 			rd_loss = rd_loss + rd_loss_temp
 			acc = acc + acc_temp

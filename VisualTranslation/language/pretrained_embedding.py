@@ -63,8 +63,9 @@ def load_embedding_from_disks(glove_filename, with_indexes=True):
     else:
         word_to_embedding_dict = dict()
 
-
+    print("finish index\n")
     with open(glove_filename, 'r') as glove_file:
+        print("file opened\n")
         for (i, line) in enumerate(glove_file):
 
             split = line.split(' ')
@@ -82,6 +83,7 @@ def load_embedding_from_disks(glove_filename, with_indexes=True):
             else:
                 word_to_embedding_dict[word] = representation
 
+    print("find word\ns")
     _WORD_NOT_FOUND = [0.0]* len(representation)  # Empty representation for unknown words.
     if with_indexes:
         _LAST_INDEX = i + 1

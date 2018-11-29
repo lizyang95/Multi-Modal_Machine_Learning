@@ -470,7 +470,7 @@ def load_dic():
 	return dic
 
 def load_embedding():
-	data = np.load('../VisualTranslation/input/embedding.npz')
+	data = np.load('../VisualTranslation/input/embedding_300d.npz')
 	data = data['embedding']
 	embedding = data[0]
 	return embedding

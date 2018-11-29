@@ -29,7 +29,7 @@ class VTranse(object):
 		self.dic = load_dic()
 
 	def create_graph(self, N_each_batch, index_sp, index_cls,lan_prio,
-	 					   num_classes, num_predicates, word_dim=25):
+	 					   num_classes, num_predicates, word_dim=300):
 		self.image = tf.placeholder(tf.float32, shape=[1, None, None, 3])
 		self.sbox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
 		self.obox = tf.placeholder(tf.float32, shape=[N_each_batch, 4])
@@ -156,7 +156,7 @@ class VTranse(object):
 			sub_fc = tf.concat([sub_fc, sub_cls_prob], axis = 1)
 			ob_fc = tf.concat([ob_fc, ob_cls_prob], axis = 1)
 		if self.lan_prio:
-			for i in range(40):
+			for i in range(4):
 				sub_fc = tf.concat([sub_fc, sub_lan], axis = 1)
 				ob_fc = tf.concat([ob_fc, obj_lan], axis = 1)
 

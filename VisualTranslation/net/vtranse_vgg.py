@@ -149,7 +149,19 @@ class VTranse(object):
             crops = tf.image.crop_and_resize(bottom, bboxes, tf.to_int32(batch_ids), [cfg.POOLING_SIZE*2, cfg.POOLING_SIZE*2], method='bilinear',
                                              name="crops")
             pooling = max_pool(crops, 2, 2, 2, 2, name="max_pooling")
-        return pooling
+
+        sx = (sx1 + sx2) / 2
+        sy = (sy1 + sy2) / 2
+        ox = (ox1 + ox2) / 2
+        oy = (oy1 + oy2) / 2
+
+        x = tf.maximum(sx2, ox2) - tf.minimum(sx1, ox1)
+        y = tf.maximum(sy2, oy2) - tf.minimum(sy1, oy1)
+
+        dx = (ox - sx) / x
+        dy = (oy - sy) / y
+
+        return pooling, dx, dy
 
     def region_classification(self, fc7, is_training, reuse = False):
         cls_score = slim.fully_connected(fc7, self.num_classes, 
@@ -171,13 +183,15 @@ class VTranse(object):
 
     def build_pred_network(self, is_training=True):
         net_conv = self.layers['head']
-        pred_pool5 = self.crop_pool_pred_layer(net_conv, self.sbox, self.obox, "pred_pool5")
+        pred_pool5, dx, dy = self.crop_pool_pred_layer(net_conv, self.sbox, self.obox, "pred_pool5")
         pred_fc7 = self.head_to_tail(pred_pool5, is_training, reuse = True)
 
         with tf.variable_scope(self.scope, self.scope):
             pred_cls_score = self.region_classification_pred(pred_fc7, is_training, reuse = True)
 
         self.pred_cls_score = pred_cls_score
+        self.dx = dx
+        self.dy = dy
         self.layers['pred_pool5'] = pred_pool5
         self.layers['pred_fc7'] = pred_fc7
 
@@ -201,7 +215,7 @@ class VTranse(object):
         ob_fc1 = slim.fully_connected(ob_fc, cfg.VTR.VG_R, 
                                          activation_fn=tf.nn.relu, scope='RD_ob_fc1')
         dif_fc1 = ob_fc1 - sub_fc1
-        dif_fc1 = tf.concat([dif_fc1, self.pred_cls_score], 1)
+        dif_fc1 = tf.concat([dif_fc1, self.pred_cls_score, self.dx, self.dy], 1)
         dif_fc1 = slim.fully_connected(dif_fc1, cfg.VTR.VG_R, 
                                          activation_fn=tf.nn.relu, scope='RD_pred_fc1')
         rela_score = slim.fully_connected(dif_fc1, self.num_predicates, 

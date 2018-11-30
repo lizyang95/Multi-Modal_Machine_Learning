@@ -20,8 +20,8 @@ index_cls = False
 vnet = VTranse()
 vnet.create_graph(N_each_batch, index_sp, index_cls, N_cls, N_rela)
 
-roidb_path = cfg.DIR + 'vtranse/input/vrd_roidb.npz'
-res_path = cfg.DIR + 'vtranse/pretrained_para/vrd_vgg_pretrained.ckpt'
+roidb_path = cfg.DIR + 'input/vrd_roidb.npz'
+res_path = cfg.DIR + 'pretrained_para/vrd_vgg_pretrained.ckpt'
 
 roidb_read = read_roidb(roidb_path)
 train_roidb = roidb_read['train_roidb']
@@ -72,7 +72,7 @@ with tf.Session() as sess:
 				rd_loss = 0.0
 				acc = 0.0
 			if t % N_save == 0: 
-				save_path = cfg.DIR + 'vtranse/pred_para/vrd_vgg/vrd_vgg' + format(int(t/N_save),'04') + '.ckpt' 
+				save_path = cfg.DIR + 'pred_para/vrd_vgg/vrd_vgg' + format(int(t/N_save),'04') + '.ckpt' 
 				print("saving model to {0}".format(save_path))
 				saver.save(sess, save_path)
 				rd_loss_val = 0.0

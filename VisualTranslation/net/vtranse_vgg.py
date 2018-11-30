@@ -41,6 +41,7 @@ class VTranse(object):
         self.N_each_batch = N_each_batch
 
         self.build_dete_network()
+        self.build_pred_network()
         self.build_rd_network()
         self.add_rd_loss()
 
@@ -127,23 +128,28 @@ class VTranse(object):
         Notice that the input rois is a N*4 matrix, and the coordinates of x,y should be original x,y times im_scale. 
         """
         with tf.variable_scope(name) as scope:
-            n=tf.to_int32(rois.shape[0])
+            n=tf.to_int32(sbox.shape[0])
             batch_ids = tf.zeros([n,],dtype=tf.int32)
             # Get the normalized coordinates of bboxes
             bottom_shape = tf.shape(bottom)
             height = (tf.to_float(bottom_shape[1]) - 1.) * np.float32(self.feat_stride[0])
             width = (tf.to_float(bottom_shape[2]) - 1.) * np.float32(self.feat_stride[0])
-            x1 = tf.slice(rois, [0, 0], [-1, 1], name="x1") / width
-            y1 = tf.slice(rois, [0, 1], [-1, 1], name="y1") / height
-            x2 = tf.slice(rois, [0, 2], [-1, 1], name="x2") / width
-            y2 = tf.slice(rois, [0, 3], [-1, 1], name="y2") / height
+            sx1 = tf.slice(sbox, [0, 0], [-1, 1], name="sx1") / width
+            sy1 = tf.slice(sbox, [0, 1], [-1, 1], name="sy1") / height
+            sx2 = tf.slice(sbox, [0, 2], [-1, 1], name="sx2") / width
+            sy2 = tf.slice(sbox, [0, 3], [-1, 1], name="sy2") / height
+
+            ox1 = tf.slice(obox, [0, 0], [-1, 1], name="ox1") / width
+            oy1 = tf.slice(obox, [0, 1], [-1, 1], name="oy1") / height
+            ox2 = tf.slice(obox, [0, 2], [-1, 1], name="ox2") / width
+            oy2 = tf.slice(obox, [0, 3], [-1, 1], name="oy2") / height
+
             # Won't be back-propagated to rois anyway, but to save time
-            bboxes = tf.stop_gradient(tf.concat([y1, x1, y2, x2], 1))
+            bboxes = tf.stop_gradient(tf.concat([tf.minimum(sy1, oy1), tf.minimum(sx1, ox1), tf.maximum(sy2, oy2), tf.maximum(sx2, ox2)], 1))
             crops = tf.image.crop_and_resize(bottom, bboxes, tf.to_int32(batch_ids), [cfg.POOLING_SIZE*2, cfg.POOLING_SIZE*2], method='bilinear',
                                              name="crops")
             pooling = max_pool(crops, 2, 2, 2, 2, name="max_pooling")
         return pooling
-
 
     def region_classification(self, fc7, is_training, reuse = False):
         cls_score = slim.fully_connected(fc7, self.num_classes, 
@@ -152,15 +158,24 @@ class VTranse(object):
         cls_prob = tf.nn.softmax(cls_score, name="cls_prob")
         cls_pred = tf.argmax(cls_score, axis=1, name="cls_pred")
 
-        return cls_score, cls_prob, cls_pred
+        return cls_prob, cls_pred
+
+    def region_classification_pred(self, fc7, is_training, reuse = False):
+        cls_score = slim.fully_connected(fc7, self.num_classes, 
+                                         activation_fn=None, scope='cls_score', reuse=reuse)
+        print("cls_score's shape: {0}".format(cls_score.get_shape()))
+        cls_prob = tf.nn.softmax(cls_score, name="cls_prob")
+        cls_pred = tf.argmax(cls_score, axis=1, name="cls_pred")
+
+        return cls_score
 
     def build_pred_network(self, is_training=True):
         net_conv = self.layers['head']
         pred_pool5 = self.crop_pool_pred_layer(net_conv, self.sbox, self.obox, "pred_pool5")
-        pred_fc7 = self.head_to_tail(pred_pool5, is_training, reuse = False)
+        pred_fc7 = self.head_to_tail(pred_pool5, is_training, reuse = True)
 
         with tf.variable_scope(self.scope, self.scope):
-            pred_cls_score = self.region_classification(pred_fc7, is_training, reuse = False)
+            pred_cls_score = self.region_classification_pred(pred_fc7, is_training, reuse = True)
 
         self.pred_cls_score = pred_cls_score
         self.layers['pred_pool5'] = pred_pool5

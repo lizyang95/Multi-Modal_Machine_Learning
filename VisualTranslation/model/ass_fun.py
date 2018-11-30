@@ -479,3 +479,9 @@ def reformat_name(name):
 	pre_list = name.split('/')
 	act_list = pre_list[-5:]
 	return cfg.DIR + '/'.join(act_list)
+
+def load_pred_dic():
+	data = np.load('../VisualTranslation/input/pred_dic.npz')
+	data = data['dic']
+	dic = data[0]
+	return dic

@@ -18,7 +18,7 @@ word_representations_dimensions = 25  # Embedding of size (vocab_len, nb_dimensi
 
 
 DATA_FOLDER = "embeddings"
-SUBFOLDER_NAME = "glove.twitter.27B"
+SUBFOLDER_NAME = "glove.6B.300d"
 TF_EMBEDDING_FILE_NAME = "{}.ckpt".format(SUBFOLDER_NAME)
 SUFFIX = SUBFOLDER_NAME + "." + str(word_representations_dimensions)
 TF_EMBEDDINGS_FILE_PATH = os.path.join(DATA_FOLDER, SUFFIX + "d.ckpt")

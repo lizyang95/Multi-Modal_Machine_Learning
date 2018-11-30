@@ -151,7 +151,7 @@ del index_to_embedding
 
 
 # test on a batch of word
-dic = load_dic()
+dic = load_pred_dic()
 batch_of_words = list(dic.values())
 batch_indexes = [word_to_index[w.lower()] for w in batch_of_words]
 

@@ -166,13 +166,13 @@ class VTranse(object):
 		dif_fc1 = ob_fc1 - sub_fc1
 		rela_score = slim.fully_connected(dif_fc1, self.num_predicates,
 										 activation_fn=None, scope='RD_fc2')
-		rela_score = slim.fully_connected(rela_score)
+		rela_prob = tf.nn.softmax(rela_score)
 		self.layers['rela_score'] = rela_score
-		# self.layers['rela_prob'] = rela_prob
+		self.layers['rela_prob'] = rela_prob
 
 	def add_rd_loss(self):
 		rela_score = self.layers['rela_score']
-		# rela_prob = self.layers['rela_prob']
+		rela_prob = self.layers['rela_prob']
 		rela_label = self.rela_label
 		rd_loss = tf.reduce_mean( tf.nn.sparse_softmax_cross_entropy_with_logits(
 									labels = rela_label, logits = rela_score) )
@@ -185,8 +185,8 @@ class VTranse(object):
 		rela_pred = tf.argmax(rela_score, 1)
 		self.predictions['rela_pred'] = rela_pred
 
-		# rela_max_prob = tf.reduce_max(rela_prob, 1)
-		# self.predictions['rela_max_prob'] = rela_max_prob
+		rela_max_prob = tf.reduce_max(rela_prob, 1)
+		self.predictions['rela_max_prob'] = rela_max_prob
 
 	def train_predicate(self, sess, roidb_use, RD_train):
 		im, im_scale = im_preprocess(roidb_use['image'])

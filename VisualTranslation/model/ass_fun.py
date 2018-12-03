@@ -2,6 +2,10 @@ import numpy as np
 import cv2 
 import os
 from model.config import cfg 
+import pdb
+import matplotlib.pyplot as plt
+import cv2
+
 
 def generate_batch(N_total, N_each):
 	"""
@@ -179,11 +183,14 @@ def pred_recall(test_roidb, pred_roidb, N_recall):
 	return acc
 
 def rela_recall(test_roidb, pred_roidb, N_recall):
+	sublabels = ["person", "sky", "building", "truck", "bus", "table", "shirt", "chair", "car", "train", "glasses", "tree", "boat", "hat", "trees", "grass", "pants", "road", "motorcycle", "jacket", "monitor", "wheel", "umbrella", "plate", "bike", "clock", "bag", "shoe", "laptop", "desk", "cabinet", "counter", "bench",     "shoes", "tower", "bottle", "helmet", "stove", "lamp", "coat", "bed", "dog",     "mountain", "horse", "plane", "roof", "skateboard", "traffic light", "bush"    , "phone", "airplane", "sofa", "cup", "sink", "shelf", "box", "van", "hand",     "shorts", "post", "jeans", "cat", "sunglasses", "bowl", "computer", "pillow", "pizza", "basket", "elephant", "kite", "sand", "keyboard", "plant", "can"    , "vase", "refrigerator", "cart", "skis", "pot", "surfboard", "paper", "mouse", "trash can", "cone", "camera", "ball", "bear", "giraffe", "tie", "luggage", "faucet", "hydrant", "snowboard", "oven", "engine", "watch", "face", "street", "ramp", "suitcase"]
+	predlabels = ["on", "wear", "has", "next to", "sleep next to", "sit next to", "stand next to", "park next", "walk next to", "above", "behind", "stand behind", "sit behind", "park behind", "in the front of", "under", "stand under", "sit under", "near", "walk to", "walk", "walk past", "in", "below", "beside", "walk beside", "over", "hold", "by", "beneath", "with", "on the top of", "on the left of", "on the right of", "sit on", "ride", "carry", "look", "stand on", "use", "at", "attach to", "cover", "touch", "watch", "against", "inside", "adjacent to", "across", "contain", "drive", "drive on", "taller than", "eat", "park on", "lying on", "pull", "talk", "lean on", "fly", "face", "play with", "sleep on", "outside of", "rest on", "follow", "hit", "feed", "kick", "skate on"]
 	N_right = 0.0
 	N_total = 0.0
 	N_data = len(test_roidb)
 	num_right = np.zeros([N_data,])
 	for i in range(N_data):
+		im = cv2.imread(test_roidb[i]['image'])
 		rela_gt = test_roidb[i]['rela_gt']
 		if len(rela_gt) == 0:
 			continue
@@ -214,7 +221,23 @@ def rela_recall(test_roidb, pred_roidb, N_recall):
 		for j in range(N_pred):
 			if pred_rela_score[j] <= thresh:
 				continue
+
+			im2 = im.copy()
+			sub_box = sub_box_dete[j].astype(int)
+			obj_box = obj_box_dete[j].astype(int)
+			cv2.rectangle(im2, (sub_box[0], sub_box[1]), (sub_box[2], sub_box[3]), (255,0,0),3)
+			cv2.rectangle(im2, (obj_box[0], obj_box[1]), (obj_box[2], obj_box[3]), (0,0,255),3)
+			cv2.putText(im2, "Sub: " + sublabels[int(sub_dete[j])], (sub_box[0], sub_box[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 3)
+			cv2.putText(im2, "Obj: " + sublabels[int(obj_dete[j])], (obj_box[0], obj_box[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 3)
+			cv2.putText(im2, "Pred: " + predlabels[int(pred_rela[j])] + " Score: " + str(pred_rela_score[j]), (obj_box[0], obj_box[3]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 3)
+			path, file = os.path.split(test_roidb[i]['image'])
+			path = path[:-14] + "results/" + file[:-4] + "spo" + str(j) + ".png"
 			
+			# uncomment the following line to save the results in /dataset/VRD/sg_dataset/results
+			# create the results folder first
+			# cv2.imwrite(path, im2)
+
+
 			for k in range(N_rela):
 				if detected_gt[k] == 1:
 					continue
